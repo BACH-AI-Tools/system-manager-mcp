@@ -79,7 +79,7 @@ public class McpServer
     {
         return new
         {
-            tools = new[]
+            tools = new object[]
             {
                 new
                 {
@@ -122,7 +122,7 @@ public class McpServer
         };
     }
     
-    private async Task<object> HandleToolCall(JsonElement request)
+    private Task<object> HandleToolCall(JsonElement request)
     {
         var toolName = request.GetProperty("params").GetProperty("name").GetString();
         var args = request.GetProperty("params").TryGetProperty("arguments", out var argsElement) 
@@ -139,9 +139,9 @@ public class McpServer
                 _ => "Unknown tool"
             };
             
-            return new
+            return Task.FromResult<object>(new
             {
-                content = new[]
+                content = new object[]
                 {
                     new
                     {
@@ -149,13 +149,13 @@ public class McpServer
                         text = result
                     }
                 }
-            };
+            });
         }
         catch (Exception ex)
         {
-            return new
+            return Task.FromResult<object>(new
             {
-                content = new[]
+                content = new object[]
                 {
                     new
                     {
@@ -163,7 +163,7 @@ public class McpServer
                         text = $"错误: {ex.Message}"
                     }
                 }
-            };
+            });
         }
     }
     
